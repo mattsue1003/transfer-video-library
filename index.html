@@ -92,7 +92,7 @@ main { padding-block: 20px 56px }
 .flag { justify-self: start; font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 6px }
 .flag.trained { background: var(--amber-soft); color: #7A5200 }
 .flag.product { background: #EEF0F2; color: #44515C }
-.flag.ai { background: var(--green-soft); color: var(--green-deep) }
+.flag.aiok { background: var(--green-soft); color: var(--green-deep) }
 .flag.warn { background: var(--orange-soft); color: var(--orange) }
 .flag.zh { background: #E8EEF8; color: #2A4A7A }
 .chipsrow { display: flex; flex-wrap: wrap; gap: 4px; align-items: flex-start; align-self: start }
@@ -596,7 +596,7 @@ function update() {
   shown.forEach(v => {
     const c = document.createElement('button'); c.type = 'button'; c.className = 'card'; c.setAttribute('aria-label', '觀看：' + v.name_zh);
     c.innerHTML = `<div class="thumb" style="background-image:url(thumbs/${encodeURIComponent(v.yt)}.jpg)"><div class="badges"><span>${esc(v.region)}</span><span>${esc(v.format)}</span></div><div class="play"><span></span></div><div class="dur">${esc(v.duration)}</div></div>
-      <div class="body"><div class="lv ${lvCls(v.level)}">${esc(v.level)}・${esc(v.scenes.join('、'))}</div><h3>${esc(v.name_zh)}</h3><div class="sub">${esc(v.channel)}・▶ ${fmt(v.views)}</div><div class="chipsrow">${aiOf(v) === 'AI 推薦' ? '<span class="flag ai">AI 推薦</span>' : aiOf(v) === '專業參考' ? '<span class="flag trained">專業參考</span>' : aiOf(v) === '有疑慮' ? (CONF.concern.includes(v.id) ? '<span class="flag warn">動作有疑慮（治療師確認）</span>' : '<span class="flag warn">AI：動作有疑慮</span>') : ''}${zhOK(v) ? '<span class="flag zh">中文</span>' : ''}${v.flag ? `<span class="flag ${v.flag}">${FLAG[v.flag]}</span>` : ''}</div></div>`;
+      <div class="body"><div class="lv ${lvCls(v.level)}">${esc(v.level)}・${esc(v.scenes.join('、'))}</div><h3>${esc(v.name_zh)}</h3><div class="sub">${esc(v.channel)}・▶ ${fmt(v.views)}</div><div class="chipsrow">${aiOf(v) === 'AI 推薦' ? '<span class="flag aiok">AI 推薦</span>' : aiOf(v) === '專業參考' ? '<span class="flag trained">專業參考</span>' : aiOf(v) === '有疑慮' ? (CONF.concern.includes(v.id) ? '<span class="flag warn">動作有疑慮（治療師確認）</span>' : '<span class="flag warn">AI：動作有疑慮</span>') : ''}${zhOK(v) ? '<span class="flag zh">中文</span>' : ''}${v.flag ? `<span class="flag ${v.flag}">${FLAG[v.flag]}</span>` : ''}</div></div>`;
     c.onclick = () => openV(v.id);
     g.append(c);
   });
