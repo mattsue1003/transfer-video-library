@@ -400,8 +400,10 @@ footer { padding-block: 18px 40px; font-size: 14px }
 
 <script src="videos2.js"></script>
 <script src="gemini.js"></script>
+<script src="confirmed.js"></script>
 <script>
-const V = window.VIDEOS, RM = window.REMOVED || [], GEM = window.GEM || {};
+const V = window.VIDEOS, RM = window.REMOVED || [], GEM = window.GEM || {}, CONF = window.CONFIRMED || {concern: [], reclass: []};
+const isConf = id => CONF.concern.includes(id) || CONF.reclass.includes(id);
 const zhOK = v => { const g = GEM[v.id]; return g ? (/中文/.test(g.language || '') || /^有/.test(g.zh_subtitle || '')) : v.region === '台灣'; };
 const aiOf = v => { const g = GEM[v.id]; if (!g) return '未分析'; if (g.technique_ok === '有疑慮') return '有疑慮'; if (g.family_ok !== '家屬可參考') return '專業參考'; return g.recommend ? 'AI 推薦' : '一般'; };
 const $ = s => document.querySelector(s);
@@ -594,7 +596,7 @@ function update() {
   shown.forEach(v => {
     const c = document.createElement('button'); c.type = 'button'; c.className = 'card'; c.setAttribute('aria-label', '觀看：' + v.name_zh);
     c.innerHTML = `<div class="thumb" style="background-image:url(thumbs/${encodeURIComponent(v.yt)}.jpg)"><div class="badges"><span>${esc(v.region)}</span><span>${esc(v.format)}</span></div><div class="play"><span></span></div><div class="dur">${esc(v.duration)}</div></div>
-      <div class="body"><div class="lv ${lvCls(v.level)}">${esc(v.level)}・${esc(v.scenes.join('、'))}</div><h3>${esc(v.name_zh)}</h3><div class="sub">${esc(v.channel)}・▶ ${fmt(v.views)}</div><div class="chipsrow">${aiOf(v) === 'AI 推薦' ? '<span class="flag ai">AI 推薦</span>' : aiOf(v) === '專業參考' ? '<span class="flag trained">專業參考</span>' : aiOf(v) === '有疑慮' ? '<span class="flag warn">AI：動作有疑慮</span>' : ''}${zhOK(v) ? '<span class="flag zh">中文</span>' : ''}${v.flag ? `<span class="flag ${v.flag}">${FLAG[v.flag]}</span>` : ''}</div></div>`;
+      <div class="body"><div class="lv ${lvCls(v.level)}">${esc(v.level)}・${esc(v.scenes.join('、'))}</div><h3>${esc(v.name_zh)}</h3><div class="sub">${esc(v.channel)}・▶ ${fmt(v.views)}</div><div class="chipsrow">${aiOf(v) === 'AI 推薦' ? '<span class="flag ai">AI 推薦</span>' : aiOf(v) === '專業參考' ? '<span class="flag trained">專業參考</span>' : aiOf(v) === '有疑慮' ? (CONF.concern.includes(v.id) ? '<span class="flag warn">動作有疑慮（治療師確認）</span>' : '<span class="flag warn">AI：動作有疑慮</span>') : ''}${zhOK(v) ? '<span class="flag zh">中文</span>' : ''}${v.flag ? `<span class="flag ${v.flag}">${FLAG[v.flag]}</span>` : ''}</div></div>`;
     c.onclick = () => openV(v.id);
     g.append(c);
   });
@@ -652,8 +654,8 @@ function openV(id) {
       if (EMBED) { b = document.createElement('button'); b.type = 'button'; b.onclick = () => seekTo(v, x.s); }
       else { b = document.createElement('a'); b.className = 'tbtn'; b.href = `https://www.youtube.com/watch?v=${encodeURIComponent(v.yt)}&t=${x.s}s`; b.target = '_blank'; b.rel = 'noopener'; }
       b.innerHTML = `<b>▶ ${esc(x.t)}</b><span>${esc(x.text)}</span>`; li.append(b); $('#aiSteps').append(li); });
-    $('#aiSrc').textContent = `由 Gemini（${g.model || 'Flash'}）實際觀看影片後整理，屬 AI 初評，待職能治療師確認。` + (EMBED ? '點時間可跳到影片該段。' : '點時間會在 YouTube 開啟該段。');
-    $('#aiWarn').hidden = !g.concerns; if (g.concerns) $('#aiWarn').innerHTML = `<b>AI 提醒</b>　${esc(g.concerns)}`;
+    $('#aiSrc').textContent = `由 Gemini（${g.model || 'Flash'}）實際觀看影片後整理` + (isConf(v.id) ? `，判斷已由${CONF.by || '職能治療師'}確認（${CONF.date}）。` : '，屬 AI 初評，待職能治療師確認。') + (EMBED ? '點時間可跳到影片該段。' : '點時間會在 YouTube 開啟該段。');
+    $('#aiWarn').hidden = !g.concerns; if (g.concerns) $('#aiWarn').innerHTML = `<b>${CONF.concern.includes(v.id) ? '職能治療師確認的疑慮' : 'AI 提醒'}</b>　${esc(g.concerns)}`;
   }
   $('#dSrc').textContent = `原始影片：${v.channel}〈${v.title}〉` + (v.key_points ? '' : '　＊重點依影片標題與分類整理，提醒為職能治療師的通用建議。');
   if (!dlg.open) dlg.showModal();
