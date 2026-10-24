@@ -667,6 +667,8 @@ function seekTo(v, sec) {
   if (f) { const cmd = (func, args) => f.contentWindow.postMessage(JSON.stringify({event: 'command', func, args}), '*'); cmd('seekTo', [sec, true]); cmd('playVideo', []); $('#player').scrollIntoView({block: 'nearest'}); }
   else window.open(`https://www.youtube.com/watch?v=${v.yt}&t=${sec}s`, '_blank', 'noopener');
 }
+// 公版回報按鈕：帶入目前開啟的影片
+window.REPORT_CONTEXT = () => (dlg.open && cur) ? {item: cur.id, itemName: cur.name_zh} : {};
 function step(d) { const L = shown.length ? shown : V; const i = L.findIndex(x => x.id === cur.id); openV(L[(i + d + L.length) % L.length].id); }
 $('#dPrev').onclick = () => step(-1); $('#dNext').onclick = () => step(1);
 $('#dClose').onclick = () => dlg.close(); $('#xClose').onclick = () => dlg.close();
@@ -677,5 +679,6 @@ const fromHash = () => { if (/^#[a-z]{2,4}_[a-z0-9_]+$/.test(location.hash)) ope
 fromHash(); addEventListener('hashchange', fromHash);
 </script>
 
+<script src="https://mattsue1003.github.io/oth-report-button/report.js" data-site="轉移位影片資料庫" defer></script>
 </body>
 </html>
