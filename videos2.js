@@ -49,13 +49,13 @@ window.VIDEOS = [
   "views": 231873,
   "likes": 9186,
   "duration": "0:25",
-  "name_zh": "長照護理椅內坐姿後拉復位法",
+  "name_zh": "地上坐著的人，單人抱回椅子",
   "category": "徒手坐姿調整",
   "scenario": "椅內復位",
   "philosophy": "協助依賴型",
-  "type": "slump",
+  "type": "floor",
   "scenes": [
-   "椅內復位"
+   "地面起身"
   ],
   "people": "1 人",
   "tips": [
@@ -67,16 +67,16 @@ window.VIDEOS = [
    "從腋下硬往上提",
    "長輩肩膀疼痛"
   ],
-  "summary": "從後方環抱前臂，先前傾再往後帶，讓下滑的長輩坐回椅背。",
+  "summary": "實際內容是把坐在地上的人，由一位照顧者徒手抱回後方椅子（原清單誤列為椅內復位）。",
   "tags": [
-   "椅內復位",
+   "跌倒後起身",
    "壓瘡預防",
    "防跌"
   ],
   "target_patients": "長時間坐輪椅軀幹無力前滑、骶骨壓迫容易產生壓瘡與下滑跌倒的長者",
   "clinical_intent": "調整坐姿重心中線，減輕骶骨剪力，維護長者胸腔呼吸擴展度與坐姿舒適。",
   "key_points": "由後方環抱長輩前臂，前推軀幹讓長輩重心前傾臀部浮起，順勢後收回位，動作柔順毫不費力。",
-  "level": "能出一部分力",
+  "level": "幾乎無法出力",
   "source": "治療師・護理師",
   "flag": null,
   "cond": []
@@ -558,13 +558,13 @@ window.VIDEOS = [
   "views": 38612,
   "likes": 310,
   "duration": "5:01",
-  "name_zh": "日本轉移位技巧課程 6",
+  "name_zh": "床上往上移：硬拉 vs 身體連動與滑布",
   "category": "徒手自然介助",
   "scenario": "床邊樞軸轉移",
   "philosophy": "自立支援介護",
-  "type": "pivot",
+  "type": "sheet",
   "scenes": [
-   "床↔輪椅"
+   "床上移位"
   ],
   "people": "1 人",
   "tips": [
@@ -576,11 +576,11 @@ window.VIDEOS = [
    "完全無法承重或無法配合",
    "照顧者有腰傷"
   ],
-  "summary": "在台推廣的日本自立支援介護課程片段，床邊樞軸轉位。",
+  "summary": "對比錯誤的硬拉與正確的身體連動，並示範用移位滑布協助臥床者往床頭移。",
   "tags": [
-   "站立樞軸轉位"
+   "移位滑布"
   ],
-  "level": "能出一部分力",
+  "level": "幾乎無法出力",
   "source": "照服員・介護教學",
   "flag": null,
   "cond": []
@@ -718,7 +718,9 @@ window.VIDEOS = [
   "type": "bodymech",
   "scenes": [
    "床↔輪椅",
-   "沙發・餐椅"
+   "如廁",
+   "上下車",
+   "地面起身"
   ],
   "people": "1 人",
   "tips": [
@@ -797,7 +799,10 @@ window.VIDEOS = [
   "philosophy": "雙人全協助",
   "type": "twoperson",
   "scenes": [
-   "床↔輪椅"
+   "床↔輪椅",
+   "如廁",
+   "上下車",
+   "地面起身"
   ],
   "people": "2 人",
   "tips": [
@@ -873,10 +878,9 @@ window.VIDEOS = [
   "category": "北歐徒手移位法",
   "scenario": "床上翻身與移位",
   "philosophy": "北歐Kinesthetik概念",
-  "type": "turn",
+  "type": "situp",
   "scenes": [
-   "床上移位",
-   "床↔輪椅"
+   "床上移位"
   ],
   "people": "1–2 人",
   "tips": [
@@ -890,9 +894,9 @@ window.VIDEOS = [
   ],
   "summary": "北歐照顧職訓的徒手翻身與轉位，順著人體自然動作引導。",
   "tags": [
-   "翻身擺位"
+   "床上起坐"
   ],
-  "level": "幾乎無法出力",
+  "level": "各種程度",
   "source": "照服員・介護教學",
   "flag": null,
   "cond": []
@@ -1107,7 +1111,8 @@ window.VIDEOS = [
   "philosophy": "零負擔移位",
   "type": "board",
   "scenes": [
-   "床↔輪椅"
+   "床↔輪椅",
+   "椅內復位"
   ],
   "people": "0–1 人",
   "tips": [
@@ -2766,7 +2771,8 @@ window.VIDEOS = [
   "philosophy": "協助依賴型 / 零抬舉 No-Lift",
   "type": "hoist",
   "scenes": [
-   "床↔輪椅"
+   "床↔輪椅",
+   "如廁"
   ],
   "people": "1–2 人",
   "tips": [
@@ -2805,7 +2811,8 @@ window.VIDEOS = [
   "philosophy": "復能型與防跌保護",
   "type": "belt",
   "scenes": [
-   "床↔輪椅"
+   "床↔輪椅",
+   "沙發・餐椅"
   ],
   "people": "1 人",
   "tips": [
@@ -3650,7 +3657,8 @@ window.VIDEOS = [
   "type": "pivot",
   "scenes": [
    "床↔輪椅",
-   "輪椅操作"
+   "輪椅操作",
+   "地面起身"
   ],
   "people": "1 人",
   "tips": [

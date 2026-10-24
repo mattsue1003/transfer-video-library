@@ -359,7 +359,7 @@ footer { padding-block: 18px 40px; font-size: 14px }
 
 <section class="review"><div class="wrap">
   <h2 style="font-size:26px">審核說明</h2>
-  <p class="muted" style="margin:6px 0 0;max-width:46em">影片清單依播放數與按讚數初選，再由愛迪樂｜鍾孟修 職能治療師依三個原則篩選：要有實際操作示範、內容符合安全搬運原則（不抬人、不拉手臂）、不是單純的商品廣告。保留的商品示範片會標「商品示範」，需要訓練的徒手技巧會標「專業技巧」。</p>
+  <p class="muted" style="margin:6px 0 0;max-width:46em">影片清單依播放數與按讚數初選，由 Gemini 逐支看片整理重點與時間點，再由愛迪樂｜鍾孟修 職能治療師依三個原則篩選：要有實際操作示範、內容符合安全搬運原則（不抬人、不拉手臂）、不是單純的商品廣告。保留的商品示範片會標「商品示範」，需要訓練的徒手技巧會標「專業技巧」。</p>
   <details><summary id="rmSum">未收錄的影片與原因</summary><ul class="rm" id="rmList"></ul></details>
 </div></section>
 
@@ -383,7 +383,7 @@ footer { padding-block: 18px 40px; font-size: 14px }
         <p id="aiSum"></p>
         <ol class="tsteps" id="aiSteps"></ol>
         <div class="notice trained" id="aiWarn" hidden></div>
-        <p class="aisrc">由 Gemini 實際觀看影片後整理（AI 初評，待職能治療師確認）。點時間可跳到影片該段。</p>
+        <p class="aisrc" id="aiSrc"></p>
       </div>
       <div class="pt" id="pSum"><h4>這支影片在教</h4><p id="dSum"></p></div>
       <div class="pt" id="pWho"><h4>適合誰</h4><p id="dWho"></p></div>
@@ -403,7 +403,7 @@ footer { padding-block: 18px 40px; font-size: 14px }
 <script>
 const V = window.VIDEOS, RM = window.REMOVED || [], GEM = window.GEM || {};
 const zhOK = v => { const g = GEM[v.id]; return g ? (/中文/.test(g.language || '') || /^有/.test(g.zh_subtitle || '')) : v.region === '台灣'; };
-const aiOf = v => { const g = GEM[v.id]; if (!g) return '未分析'; if (g.technique_ok === '有疑慮') return '有疑慮'; return g.recommend ? 'AI 推薦' : '一般'; };
+const aiOf = v => { const g = GEM[v.id]; if (!g) return '未分析'; if (g.technique_ok === '有疑慮') return '有疑慮'; if (g.family_ok !== '家屬可參考') return '專業參考'; return g.recommend ? 'AI 推薦' : '一般'; };
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
 const fmt = n => n >= 1e8 ? (n / 1e8).toFixed(1) + ' 億' : n >= 1e4 ? Math.round(n / 1e4).toLocaleString() + ' 萬' : n.toLocaleString();
@@ -426,7 +426,7 @@ const G = [
   {key: 'level', label: '長輩能力', get: v => v.level, opts: ['能自己做', '能出一部分力', '幾乎無法出力', '各種程度']},
   {key: 'ppl', label: '需要人力', get: pplOf, opts: ['自行', '1 人', '可能需 2 人']},
   {key: 'zh', label: '語言', get: v => zhOK(v) ? '中文看得懂' : '外語（無中文字幕）', opts: ['中文看得懂', '外語（無中文字幕）']},
-  {key: 'ai', label: 'AI 初評（Gemini 看片）', get: aiOf, opts: ['AI 推薦', '一般', '有疑慮']},
+  {key: 'ai', label: 'AI 初評（Gemini 看片）', get: aiOf, opts: ['AI 推薦', '專業參考', '一般', '有疑慮']},
   {key: 'region', label: '地區', get: v => v.region, opts: ['台灣', '日本', '歐美', '韓國']},
   {key: 'format', label: '長度', get: v => v.format, opts: ['短影音', '長影音']},
   {key: 'source', label: '來源', get: v => v.source, opts: ['醫院・政府・學會', '治療師・護理師', '照服員・介護教學', '輔具廠商・機構', '個案・照顧者分享', '媒體']},
@@ -566,7 +566,7 @@ function filtered() {
   let L = V.filter(v => recMatch(v) && G.every(g => !st[g.key] || (Array.isArray(g.get(v)) ? g.get(v).includes(st[g.key]) : g.get(v) === st[g.key])) &&
     [...st.tags].every(t => v.tags.includes(t)) &&
     (!q || [v.name_zh, v.title, v.channel, v.summary, v.target_patients, v.key_points, v.category, v.scenario, v.region, v.format, v.level, v.source, ...v.tags, ...v.scenes, ...v.tips].join(' ').toLowerCase().includes(q)));
-  const ar = v => ({'AI 推薦': 0, '一般': 1, '未分析': 1, '有疑慮': 2})[aiOf(v)];
+  const ar = v => ({'AI 推薦': 0, '專業參考': 1, '一般': 1, '未分析': 1, '有疑慮': 2})[aiOf(v)];
   if (st.rec && st.sort === 'default') { const fo = f => f ? (f === 'trained' ? 1 : 2) : 0; const ci = v => st.rec.cond && (v.cond || []).includes(st.rec.cond) ? 0 : 1, ti = v => { const i = st.rec.types.indexOf(v.type); return i < 0 ? 99 : i; };
     L = [...L].sort((a, b) => ci(a) - ci(b) || ti(a) - ti(b) || ar(a) - ar(b) || fo(a.flag) - fo(b.flag) || b.views - a.views); }
   if (!st.rec && st.sort === 'default') L = [...L].sort((a, b) => ar(a) - ar(b));
@@ -594,7 +594,7 @@ function update() {
   shown.forEach(v => {
     const c = document.createElement('button'); c.type = 'button'; c.className = 'card'; c.setAttribute('aria-label', '觀看：' + v.name_zh);
     c.innerHTML = `<div class="thumb" style="background-image:url(thumbs/${encodeURIComponent(v.yt)}.jpg)"><div class="badges"><span>${esc(v.region)}</span><span>${esc(v.format)}</span></div><div class="play"><span></span></div><div class="dur">${esc(v.duration)}</div></div>
-      <div class="body"><div class="lv ${lvCls(v.level)}">${esc(v.level)}・${esc(v.scenes.join('、'))}</div><h3>${esc(v.name_zh)}</h3><div class="sub">${esc(v.channel)}・▶ ${fmt(v.views)}</div><div class="chipsrow">${aiOf(v) === 'AI 推薦' ? '<span class="flag ai">AI 推薦</span>' : aiOf(v) === '有疑慮' ? '<span class="flag warn">AI：動作有疑慮</span>' : ''}${zhOK(v) ? '<span class="flag zh">中文</span>' : ''}${v.flag ? `<span class="flag ${v.flag}">${FLAG[v.flag]}</span>` : ''}</div></div>`;
+      <div class="body"><div class="lv ${lvCls(v.level)}">${esc(v.level)}・${esc(v.scenes.join('、'))}</div><h3>${esc(v.name_zh)}</h3><div class="sub">${esc(v.channel)}・▶ ${fmt(v.views)}</div><div class="chipsrow">${aiOf(v) === 'AI 推薦' ? '<span class="flag ai">AI 推薦</span>' : aiOf(v) === '專業參考' ? '<span class="flag trained">專業參考</span>' : aiOf(v) === '有疑慮' ? '<span class="flag warn">AI：動作有疑慮</span>' : ''}${zhOK(v) ? '<span class="flag zh">中文</span>' : ''}${v.flag ? `<span class="flag ${v.flag}">${FLAG[v.flag]}</span>` : ''}</div></div>`;
     c.onclick = () => openV(v.id);
     g.append(c);
   });
@@ -636,7 +636,7 @@ function openV(id) {
   $('#dMeta').innerHTML = [['情境', v.scenes.join('、')], ['人力', v.people], ['地區・片長', `${v.region}・${v.duration}`], ['播放數', fmt(v.views)]].map(([a, b]) => `<div>${a}<b>${esc(b)}</b></div>`).join('');
   $('#dNotice').hidden = !v.flag; if (v.flag) { $('#dNotice').className = 'notice ' + v.flag; $('#dNotice').innerHTML = `<b>${FLAG[v.flag]}</b>　${esc(NOTICE[v.flag])}`; }
   const put = (p, el, t) => { $(p).hidden = !t; $(el).textContent = t || ''; };
-  put('#pSum', '#dSum', v.summary); put('#pWho', '#dWho', v.target_patients); put('#pWhy', '#dWhy', v.clinical_intent); put('#pKey', '#dKey', v.key_points);
+  put('#pSum', '#dSum', GEM[v.id] ? '' : v.summary); put('#pWho', '#dWho', v.target_patients); put('#pWhy', '#dWhy', v.clinical_intent); put('#pKey', '#dKey', v.key_points);
   $('#dTips').innerHTML = v.tips.map(t => `<li>${esc(t)}</li>`).join('');
   $('#dAvoid').innerHTML = v.avoid.map(t => `<li>${esc(t)}</li>`).join('');
   $('#dTags').innerHTML = '';
@@ -652,6 +652,7 @@ function openV(id) {
       if (EMBED) { b = document.createElement('button'); b.type = 'button'; b.onclick = () => seekTo(v, x.s); }
       else { b = document.createElement('a'); b.className = 'tbtn'; b.href = `https://www.youtube.com/watch?v=${encodeURIComponent(v.yt)}&t=${x.s}s`; b.target = '_blank'; b.rel = 'noopener'; }
       b.innerHTML = `<b>▶ ${esc(x.t)}</b><span>${esc(x.text)}</span>`; li.append(b); $('#aiSteps').append(li); });
+    $('#aiSrc').textContent = `由 Gemini（${g.model || 'Flash'}）實際觀看影片後整理，屬 AI 初評，待職能治療師確認。` + (EMBED ? '點時間可跳到影片該段。' : '點時間會在 YouTube 開啟該段。');
     $('#aiWarn').hidden = !g.concerns; if (g.concerns) $('#aiWarn').innerHTML = `<b>AI 提醒</b>　${esc(g.concerns)}`;
   }
   $('#dSrc').textContent = `原始影片：${v.channel}〈${v.title}〉` + (v.key_points ? '' : '　＊重點依影片標題與分類整理，提醒為職能治療師的通用建議。');
